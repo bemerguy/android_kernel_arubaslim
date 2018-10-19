@@ -349,17 +349,6 @@ DEPMOD		= /sbin/depmod
 PERL		= perl
 CHECK		= sparse
 
-ARM_FLAGS       = -funswitch-loops \
-                  -fpredictive-commoning \
-                  -fgcse-after-reload \
-                  -fipa-cp-clone \
-                  -fsingle-precision-constant \
-                  -pipe -finline-functions \
-                  -ffast-math \
-                  -mcpu=cortex-a5 \
-                  -mfpu=neon-fp16 \
-                  -march=armv7-a \
-                  -fvect-cost-model
 
 # Use the wrapper for the compiler.  This wrapper scans for new
 # warnings and causes the build to stop upon encountering them.
@@ -367,10 +356,10 @@ CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-CFLAGS_MODULE   = $(ARM_FLAGS) -DMODULE
-AFLAGS_MODULE   = $(ARM_FLAGS) -DMODULE --strip-debug
+CFLAGS_MODULE   = -DMODULE
+AFLAGS_MODULE   = -DMODULE --strip-debug
 LDFLAGS_MODULE  = -T $(srctree)/scripts/module-common.lds
-CFLAGS_KERNEL  = $(ARM_FLAGS) -ftree-vectorize 
+CFLAGS_KERNEL  =
 AFLAGS_KERNEL  =
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 GRAPHITE_FLAGS  = -fgraphite -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -floop-flatten
@@ -585,11 +574,16 @@ endif # $(dot-config)
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults to vmlinux, but the arch makefile usually adds further targets
 all: vmlinux
+OPTS           = -ffast-math -fsplit-loops -fmodulo-sched -fmodulo-sched-allow-regmoves -fsingle-precision-constant \
+                -fvect-cost-model=cheap -ftree-loop-ivcanon -fgcse-sm -fgcse-las -fgcse-after-reload -fira-hoist-pressure -fivopts \
+                -fsched-spec-load -fipa-pta -ftree-loop-im -funswitch-loops -fsection-anchors -fsched-pressure -fomit-frame-pointer -ftree-lrs \
+                -fschedule-fusion -finline-functions \
+                -fprefetch-loop-arrays -freorder-blocks-algorithm=simple --param=inline-min-speedup=11
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
 else
-KBUILD_CFLAGS	+= -O2
+KBUILD_CFLAGS	+= -O2 $(OPTS)
 endif
 
 include $(srctree)/arch/$(SRCARCH)/Makefile

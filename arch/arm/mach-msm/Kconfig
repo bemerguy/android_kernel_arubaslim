@@ -2830,14 +2830,14 @@ config SEC_LOG_LAST_KMSG
 config BRICKED_HOTPLUG
  	bool "Enable kernel based mpdecision"
  	depends on MSM_RUN_QUEUE_STATS
- 	default y
+ 	default n
  	help
  	  This enables kernel based multi core control.
  	  (up/down hotplug based on load)
 
 config INTELLI_PLUG
         bool "Enable intelli-plug cpu hotplug driver"
-        default n
+        default y
         help
           Generic Intelli-plug cpu hotplug driver for ARM SOCs
 

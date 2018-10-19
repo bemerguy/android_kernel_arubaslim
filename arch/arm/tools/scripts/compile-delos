@@ -1,8 +1,8 @@
 #!/bin/bash
 version=7
-make -j4 delos_defconfig
-make -j4 
-/opt/toolchains/arm-eabi-4.7/bin/arm-eabi-strip --strip-unneeded `find -type f -name *.ko`
+make -j16 delos_defconfig
+make -j16 
+#$TOOLCHAIN\strip --strip-unneeded `find -type f -name *.ko`
 mkdir system
 mkdir system/lib/
 mkdir system/lib/modules

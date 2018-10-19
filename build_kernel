@@ -1,4 +1,7 @@
 #!/bin/bash
+declare -x ARCH="arm"
+declare -x CROSS_COMPILE="/root/armv7-eabihf--musl--bleeding-edge-2018.02-1/bin/arm-linux-"
+
 gcc arch/arm/tools/build.c -o build
 ./build
 
